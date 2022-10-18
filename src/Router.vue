@@ -9,6 +9,7 @@ import Calc from './calc/PageCalc.vue';
 import Loadout from './loadout/PageLoadout.vue';
 import Map from './map/PageMap.vue';
 import Forge from './forge/PageForge.vue';
+import Quest from './quest/PageQuest.vue'
 import NotFound from './Page404.vue';
 
 const routes = {
@@ -18,6 +19,7 @@ const routes = {
     '/loadout': Loadout,
     '/map': Map,
     '/forge': Forge,
+    '/quest': Quest
 };
 const names = {
     '/': 'Apps',
@@ -26,6 +28,7 @@ const names = {
     '/loadout': 'Loadout Generator',
     '/map': 'Interactive Map',
     '/forge': 'Forge Simulator',
+    '/quest': 'Quest Tracker'
 };
 
 export default defineComponent({
