@@ -5,11 +5,8 @@
 </template>
 <script lang="ts">
 import  { defineComponent } from 'vue';
-import ArrowDown from '../icons/ArrowDown.vue'
 export default defineComponent({
-    components: {
-        ArrowDown,
-    }
+
 })
 </script>
 

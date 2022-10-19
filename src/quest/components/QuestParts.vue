@@ -1,10 +1,9 @@
 <template>
-<section class="quest-parts" :style="{ '--length': length}"> 
-    <div v-for="m in missions" class="quest-parts__card">
-        {{ missionData[m]['inGameName'] }}
-    </div>
-</section>
-
+    <section class="quest-parts" :style="{ '--length': length}"> 
+        <div v-for="m in missions" class="quest-parts__card">
+            <img :src="'/quest-images/Parts/' + m + '.png'">
+        </div>
+    </section>
 </template>
 
 <script lang="ts">
@@ -47,6 +46,7 @@ export default defineComponent({
     display: grid;
     grid-template-columns: repeat(var(--length), 1fr);
     height: 100%;
+    overflow: scroll;
 }
 
 .quest-parts__card {
