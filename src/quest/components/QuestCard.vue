@@ -88,50 +88,7 @@ export default defineComponent({
 })
 </script>
 <style>
-.modal__bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
 
-    background-color: rgba(0, 0, 0, 0.5);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal__content {
-    position: relative;
-    width: 75%;
-    height: 75%;
-    padding: 2rem;
-    background-color: var(--background-content-color);
-}
-
-.modal__close-button {
-    position: absolute;
-    top: .75rem;
-    right: 1.5rem;
-
-    font-size: 2rem;
-    color: var(--text-color-body-white);
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.modal-enter-active,
-.modal-leave-active {
-    transition:  all .25s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-    opacity: 0;
-    scale: 1.1
-}
 </style>
 
 <style scoped>
@@ -154,6 +111,7 @@ export default defineComponent({
 
     --padding: 4%;
     --border-radius: .5rem;
+    --duration: .5s
 }
 
 .card__image {
@@ -166,7 +124,7 @@ export default defineComponent({
     opacity: .4;
     z-index: -2;
 
-    transition: all .4s;
+    transition: all var(--duration);
 
     transform: rotate(0);
 
@@ -179,7 +137,7 @@ export default defineComponent({
     height: 100%;
     overflow: hidden;
     background-size: cover;
-    transition: all .4s;
+    transition: all var(--duration);
 }
 
 .card:hover .card__image-img{
@@ -201,7 +159,7 @@ export default defineComponent({
 .card__header-text {
     font-family: 'Sora';
     text-transform: none;
-    transition: .2s ease-in-out;
+    transition: var(--duration) ease-in-out;
 }
 
 .card:hover .card__header-text {
@@ -215,7 +173,7 @@ export default defineComponent({
     position: absolute;
     background-color: rgba(255, 255, 255, .8);
 
-    transition: .2s ease-in-out;
+    transition: var(--duration) ease-in-out;
 
 }
 .card:hover .card__header-text::before {
@@ -258,7 +216,24 @@ export default defineComponent({
     top: var(--padding);
     right: var(--padding);
     font-size: 1.5rem;
+}
 
+.card:hover .card__parts {
+    animation: circle calc(var(--duration) * 1.5) ease-in-out forwards;
+}
+
+@keyframes circle {
+    0% {
+        rotate: 0deg;
+    }
+
+    50% {
+        rotate: 180deg;
+    }
+
+    100% {
+        rotate: -360deg;
+    }
 }
 .card__unlock {
     position: absolute;
@@ -318,7 +293,7 @@ export default defineComponent({
 }
 
 .apply-rotate {
-    animation: rotate 0.82s ease-in-out both;
+    animation: rotate calc(var(--duration) * 1.5) ease-in-out both;
 }
 
 @media screen and (max-width: 900px) {
