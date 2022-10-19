@@ -408,7 +408,31 @@ input[type='range']:hover::-webkit-slider-thumb {
 
 .modal__content {
     position: relative;
-    
-    padding: 20rem;
+    width: 75%;
+    height: 75%;
+    padding: 2rem;
     background-color: var(--background-content-color);
+}
+
+.modal__close-button {
+    position: absolute;
+    top: .75rem;
+    right: 1.5rem;
+
+    font-size: 2rem;
+    color: var(--text-color-body-white);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-enter-active,
+.modal-leave-active {
+    transition:  all .25s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+    opacity: 0;
+    scale: 1.1
 }
