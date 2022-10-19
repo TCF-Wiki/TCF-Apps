@@ -20,13 +20,6 @@
     </div>
 </section>
 
-
-{{ title }}
-{{ desc }}
-{{ img }}
-{{ parts }}
-{{ unlock }}
-{{ footer }}
 </template>
 <script lang="ts">
 import  { defineComponent } from 'vue';
