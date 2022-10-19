@@ -1,50 +1,142 @@
 <template>
-    <div>
-        <div class="quest-list">  
-            <div class="quest-list__left">
-                <QuestCard 
-                    title="Race to the Bottom"
-                    img="MI_ICA_Race_to_the_Bottom"
-                    desc="The ICA has been monitoring a decrease in radiation levels over a small island for some time now, and now they want you to go down there and figure what happened to a group of missing colonists.
+    <div class="quest-line__container">
+        <div class="quest-line__selector">
+            <div @click="currentSlide(1)">
+                ICA
+            </div>
 
-Not much is known about the island or why the corps set up shop there, but Marie hopes you'll find clues as to what happened to the colonists at the Korolev and Osiris installations. 
-And while you're there, maybe you could look into why the corps were so interested in the island's caverns in the first place..."
-                    unlock="Tharis_Island_Key_Card"
-                    parts="1/19"
-                    footer="Placeholder..."
-                    faction="ica" 
-                />
+            <div @click="currentSlide(2)"> 
+                Korolev
             </div>
-            <div class="quest-list__left-arrow">
-                <ArrowLeft />
-            </div>
-            <div class="quest-list__center"> 
-                <QuestCard 
-                    title="The Progenitor Device"
-                    img="MI_OSI_The_Progenitor_Device"
-                    desc="After decades of storm and hazardous radiation from the Teratomorphic Energy Field enveloping most of the planet, an abandoned Osiris field lab on a remote island has suddenly become accessible. While it was common for Osiris researchers to be the last ones off the planet when the final evac order finally came, there are no recorded survivors from the installation at Tharis Island. Sullivan wants you to investigate the area, find out what happened to the researchers. And more importantly, to their research."
-                    unlock="Combat_Stim"
-                    parts="1/17"
-                    footer="Placeholder..."    
-                    faction="osi" 
-                />
-            </div>
-            <div class="quest-list__right-arrow">
-                <ArrowRight /> 
-            </div>
-            <div class="quest-list__right"> 
-                <QuestCard 
-                    title="A Whole New Ecosystem"
-                    img="MI_OSI_A_Whole_New_Ecosystem"
-                    desc="Osiris has been studying both the Fauna and Flora on Crescent Falls for years before the Storm made the Area uninhabitable. According to recent reports, that beautiful Ecosystem might slowly become accessible again. Help Osiris reclaim their Research Facilities."
-                    parts="1/3"
-                    footer="Placeholder..."    
-                    faction="kor" 
 
-                />
+            <div @click="currentSlide(3)">
+                Osiris
+            </div> 
+        </div>
+
+        <div class="quest-line__container-inner fade">        
+            <div class="quest-line">
+                ICA
             </div>
         </div>
+
+      
+        <div class="quest-line__container-inner fade">        
+            <div class="quest-line"> 
+                <div class="quest-list">
+                    <div class="quest-list__left">
+                        <QuestCard 
+                            name="Time to Punch In"
+                            faction="kor"
+                        />
+                    </div>
+
+                    <div class="quest-list__center"> 
+                        <QuestCard 
+                            name="What a Tool!"
+                            faction="kor"
+                        />
+                    </div>
+                    <div class="quest-list__right"> 
+                        <QuestCard 
+                            name="Good Honest Work"
+                            faction="kor"
+                        />
+                    </div>
+                </div>
+
+                <div class="quest-list">
+                    <div class="quest-list__left">
+                        <QuestCard 
+                            name="Veltecite for the Masses"
+                            faction="kor"
+                        />
+                    </div>
+
+                    <div class="quest-list__center"> 
+                        <QuestCard 
+                            name="Titan Hunter"
+                            faction="kor"
+                        />
+                    </div>
+                    <div class="quest-list__right"> 
+                        <QuestCard 
+                            name="Focused on Crystals"
+                            faction="kor"
+                        />
+                    </div>
+                </div>
+
+                <div class="quest-list">
+                    <div class="quest-list__left">
+                        <QuestCard 
+                            name="A Powerful Discovery"
+                            faction="kor"
+                        />
+                    </div>
+
+                    <div class="quest-list__center"> 
+                        <QuestCard 
+                            name="Time for More Work"
+                            faction="kor"
+                        />
+                    </div>
+                    <div class="quest-list__right"> 
+                        <QuestCard 
+                            name="Research Costs"
+                            faction="kor"
+                        />
+                    </div>
+                </div>
+
+                <div class="quest-list">
+                    <div class="quest-list__left">
+                        <QuestCard 
+                            name="In a Deep Dark Hole"
+                            faction="kor"
+                        />
+                    </div>
+
+                    <div class="quest-list__center"> 
+                        <QuestCard 
+                            name="Crafting Better Bags"
+                            faction="kor"
+                        />
+                    </div>
+                    <div class="quest-list__right"> 
+                        <QuestCard 
+                            name="Heavy Construction"
+                            faction="kor"
+                        />
+                    </div>
+                </div>
+                <div class="quest-list">
+                    <div class="quest-list__left">
+                        <QuestCard 
+                            name="Crush Hazard"
+                            faction="kor"
+                        />
+                    </div>
+
+                    <div class="quest-list__center"> 
+                        <QuestCard 
+                            name="The Test Run"
+                            faction="kor"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quest-line__container-inner fade">        
+            Even more Testing!
+        </div>
+
+
     </div>
+
+
+
 </template>
 
 <script lang="ts">
@@ -53,7 +145,38 @@ import QuestCard from './components/QuestCard.vue';
 import ArrowRight from './icons/ArrowRight.vue'
 import ArrowLeft from './icons/ArrowLeft.vue'
 export default defineComponent({ 
-    components: { QuestCard, ArrowRight, ArrowLeft } 
+    components: { QuestCard, ArrowRight, ArrowLeft },
+    data() {
+        return {
+            slideIndex: 1
+        }
+    },
+    methods: {
+        plusSlides(n: number) {
+            this.showSlides(this.slideIndex +=n)
+        },
+        
+        currentSlide(n: number) {
+            this.showSlides(this.slideIndex = n)
+        },
+
+        showSlides(n: number) {
+            let i;
+            let slides = document.getElementsByClassName("quest-line__container-inner") as any;
+            if (n > slides.length) {
+                this.slideIndex = 1
+            }    
+            if (n < 1) {
+                this.slideIndex = slides.length
+            }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+
+            slides[this.slideIndex-1].style.display = "block";  
+
+        }
+    }
 });
 </script>
 
@@ -68,12 +191,53 @@ export default defineComponent({
     }
 }
 
+
+.quest-line__container {
+    max-width: 100%;
+    position: relative;
+    margin: auto;
+}
+
+.quest-line__container-inner {
+    display: none;
+}
+
+.quest-line__selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    text-align: center;
+
+    margin: 0 2rem 1rem;
+
+    border: 3px solid var(--background-button-color);
+
+    cursor: pointer;
+}
+
+.quest-line__selector div {
+    text-transform: uppercase;
+    letter-spacing: .4rem;
+}
+
+.quest-line__selector div:nth-child(2) {
+    border: 4px solid var(--background-button-color);
+    border-top: none;
+    border-bottom: none;
+}
+.quest-line__selector div:hover {
+    background-color: var(--background-stripe-color);
+}
 .quest-list {
     display: grid;
     grid-template-columns: 3fr 1fr 3fr 1fr 3fr;
     gap: .3rem;
     height: 100%;
-    margin: 0 2rem;
+    margin: 2rem 2rem;
+}
+
+.quest-list:first-child {
+    margin-top: 0;
 }
 
 .quest-list__left {
@@ -100,5 +264,16 @@ export default defineComponent({
     margin: auto;
     width: 50%;
     fill: #a9a9a9;
+}
+
+
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
 }
 </style>

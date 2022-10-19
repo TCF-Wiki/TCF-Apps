@@ -1,8 +1,8 @@
 <template>
 <section class="card">
-    <img class="card__image" :src="'quest-images/' + img + '.png'" v-if="img">
+    <img class="card__image" :src="'quest-images/MI/' + name.replaceAll(' ','_') + '.png'" v-if="name">
     <div class="card__contents"> 
-        <header class="card__header" v-if="title"> <h3 class="card__header-text"> {{ title }} </h3></header>
+        <header class="card__header" v-if="name"> <h3 class="card__header-text"> {{ name }} </h3></header>
         <section class="card__desc" v-if="desc">
             <div class="card__desc-text"> 
                 {{ desc }}
@@ -13,8 +13,8 @@
                 {{ footer }}
             </div>
         </div>
-        <div class="card__unlock" v-if="unlock">
-            <img class="card__unlock-image" :src="'/map-images/item-images/' + unlock + '.png'">
+        <div class="card__unlock" v-if="unlock" :class="faction">
+            <img class="card__unlock-image" :src="'/map-images/item-images/' + unlock.replaceAll(' ','_') + '.png'">
         </div>
         <div class="card__parts" v-if="parts"> {{parts}} </div>
     </div>
@@ -23,16 +23,30 @@
 </template>
 <script lang="ts">
 import  { defineComponent } from 'vue';
-
+import { missionData } from '../data'
+import { missions } from '../QuestConstants'
 export default defineComponent({
     props: [
-        "title",
-        "desc",
-        "img",
-        "parts",
+        "name",
+        "faction",
         "unlock",
         "footer"
-    ]
+    ],
+    data() {
+        return {
+            missions: missions,
+            missionData: missionData,
+            desc: '' as string,
+            parts: '' as string
+        }
+    },
+    mounted() {
+        const mission = missions[this.faction][this.name] 
+        if (mission) {
+            this.desc = this.missionData[mission[0]]['chainDescription']
+            this.parts = `${mission.length} / ${mission.length}`
+        }
+    }
 })
 </script>
 
@@ -135,10 +149,22 @@ export default defineComponent({
     z-index: 3;
     overflow: visible;
     
-    outline: 5px solid #3fa321;
+    outline: 5px solid red;
     padding: .4rem;
 
     backdrop-filter: blur(1px);
     border-radius: 50%;
+}
+
+.osi {
+    outline-color: #3fa321;
+}
+
+.ica {
+    outline-color: #363692;
+}
+
+.kor {
+    outline-color: #d65c1f;
 }
 </style>
