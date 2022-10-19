@@ -106,12 +106,12 @@ export default defineComponent({
 
 
     background: black;
-
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     cursor: pointer;
 
     --padding: 4%;
     --border-radius: .5rem;
-    --duration: .5s
+    --duration: .5s;
 }
 
 .card__image {
@@ -157,7 +157,7 @@ export default defineComponent({
 }
 
 .card__header-text {
-    font-family: 'Sora';
+    font-family: sans-serif;
     text-transform: none;
     transition: var(--duration) ease-in-out;
 }
@@ -219,7 +219,7 @@ export default defineComponent({
 }
 
 .card:hover .card__parts {
-    animation: circle calc(var(--duration) * 1.5) ease-in-out forwards;
+    animation: circle var(--duration) ease-in-out;
 }
 
 @keyframes circle {
