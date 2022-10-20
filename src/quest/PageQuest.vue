@@ -131,6 +131,7 @@
                         <QuestCard 
                             name="Back to Basics"
                             faction="ica"
+                            unlock="Oil Pump Beacon"
                         />
                     </div>
 

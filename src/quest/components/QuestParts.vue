@@ -17,11 +17,23 @@
                         {{ missionData[m]['description'].replaceAll('"','') }}
                     </div>
                 </section>
+                <section class="card__tasks">
+                    <header> <h3> <span> Objectives </span> </h3></header>
+                    <div v-for="t, i in missionData[m]['objectives']" class="card__tasks-container">
+                        <img 
+                            :src="'/map-images/item-images/' + taskImage(t) + '.png'"
+                            class="card__tasks-image" 
+                        >
+                        <div> 
+                            {{ taskText(t, m, i) }}
+                        </div>
+                    </div>
+                </section>
                 <div class="card__rewards">
                     <div v-for="r in orderedRewards(missionData[m]['rewards'])" class="card__rewards-container"> 
                             <img  
                                 :src="'/map-images/item-images/' + rewardImageNamer(r['item']) + '.png'" 
-                                class="card__rewards-img"
+                                class="card__rewards-image"
                             >
                             <div> {{ currencyDisplay(r) }}</div>
                     </div>
@@ -30,9 +42,9 @@
                     <div class="card__footer-text">
                     </div>
                 </div>
-                <div class="card__unlock"  :class="faction" v-if="missionData[m]['rewards'].length > 3">
+                <!-- <div class="card__unlock"  :class="faction" v-if="missionData[m]['rewards'].length > 3">
                     <img class="card__unlock-image" :src="'/map-images/item-images/' + rewardMaker(missionData[m]['rewards']) + '.png'">
-                </div>
+                </div> -->
                 <div class="card__parts" >  {{ index+1 }} </div>
             </div>
         </section>
@@ -46,9 +58,9 @@
 <script lang="ts">
 import { faRotateForward } from '@fortawesome/free-solid-svg-icons';
 import { defineComponent } from 'vue';
-import { missionData } from '../data';
+import { missionData, stringTables, locationData } from '../data';
 import { missions } from '../QuestConstants';
-import { shieldData, backpackData, helmetData } from '../../forge/data'
+import { shieldData, backpackData, helmetData, itemData } from '../../forge/data'
 import { keyCardInfo } from '../../map/mapConstants'
 
 export default defineComponent({
@@ -59,7 +71,9 @@ export default defineComponent({
             missions: missions[this.faction][this.name],
             helmetData: helmetData,
             shieldData: shieldData,
-            backpackData: backpackData
+            backpackData: backpackData,
+            stringTable: stringTables['Objectives'],
+            locations: locationData 
         }
     },
     mounted() {
@@ -97,7 +111,6 @@ export default defineComponent({
                 } else if (rewardList[r]['item'].includes('Reputation')) {
                     newList.splice(1, 0, rewardList[r])
                 } else if (rewardList[r]['item'].includes('Scrip')) {
-                    console.log('Hurray!')
                     newList.splice(2, 0, rewardList[r])
                 } else {
                     newList.push(rewardList[r])
@@ -112,10 +125,15 @@ export default defineComponent({
             else if (reward.includes('Helmet_'))reward = this.helmetData[reward]['ingamename']
             else if (reward.includes('Bag_')) reward =  this.backpackData[reward]['ingamename']
             else if (reward.includes('ShockGrenade_02')) reward =  'Frag Grenade'
+            else if (reward.includes('Scrip')) reward = reward
             else if (reward.includes('KeyCard')) {
                 if (reward.includes('Map01')) reward = 'Bright_Sands_Key_Card'
                 if (reward.includes('Map02')) reward = 'Crescent_Falls_Key_Card'
                 if (reward.includes('Map03')) reward = 'Tharis_Island_Key_Card'
+            } else {
+                if (itemData[reward]) {
+                    reward = itemData[reward]['ingamename']
+                }
             }
             for (let key in keyCardInfo) {
                 if (keyCardInfo[key]['name']==reward) {
@@ -127,9 +145,103 @@ export default defineComponent({
             return reward.split(' ').join('_')
         },
         currencyDisplay(r: any) : string {
-            if (r['item'] !=='SoftCurrency') return r['amount']
+            if (r['item'] !=='SoftCurrency' || !r['item'].includes('Reputation')) {
+                if (r['amount'] > 999) return (r['amount'] / 1000) + 'k'
+            }
+            return r['amount']
+        },
+        taskText(task : any, mission: string, index: number) {
+            const type = task['type']
 
-            return (r['amount'] / 1000) + 'k'
+            if (type=='OwnNumOfItem') {
+                if (itemData[task['itemToOwn']]) {
+                    return `${task['maxProgress']} ${itemData[task['itemToOwn']]['ingamename']}`
+                }
+                return `${task['maxProgress']} ${task['itemToOwn']}`
+            }
+
+            if (type=='VisitArea') {
+                let keys = Object.keys(this.stringTable)
+                let newKeys : string[] = [];
+                newKeys = keys.filter(a => a.toLowerCase().includes(mission.toLowerCase()))
+
+                if (newKeys.length == 1) {
+                    let text =this.stringTable[newKeys[0]]
+                    if (text) return this.stringTable[newKeys[0]]
+                } else if (newKeys.length > 1) {
+                    return this.stringTable[newKeys[index]]
+                }
+
+                let text = task['locationConditions']
+                    .replace('Map',"MAP")
+                    .replace('StarportPad', 'StarportLandingPad')
+                    .replace('JungleFallenTree','FallenTree')
+                    .replace('JungleFavela','Favela')
+                    .replace('SkeletonObservation','SkeletonObservatory')
+                    .replace('AlienQuarry','CrystalCave')
+                    .replace('LetiumLocations','Letium Vent')
+                    .replace('PowerPlant','Powerplant')
+                    .replace('OsirisWildlife','Wildlife')
+
+                console.log(text, this.locations[text])
+                if (this.locations[text])  return 'Visit ' + this.locations[text]['name']
+                return text
+               
+            }
+
+            if (type=='Kills') {
+                let killType = task['killConditions']['m_killTarget']
+
+                if (killType.includes('Creatures')) {
+                    const creature : string = task['killConditions']['m_specificAIEnemyTypeToKill'] 
+                    if (creature.includes('::None')) {
+                        let returnInfo = 'Kill ' + task['maxProgress'] + ' Creatures' 
+                        returnInfo += task['killConditions']['m_onlyDuringStorm'] ? ' during storm' : ''
+                        return returnInfo
+                    } else {
+
+                    }
+                    
+                    
+                }
+                else return 'Kill ' + task['maxProgress'] + ' Players' 
+            }
+            if (type=='DeadDrop') {
+                let keys = Object.keys(this.stringTable)
+
+                let newKeys : string[] = [];
+                newKeys = keys.filter(a => a.toLowerCase().includes(mission.toLowerCase()))
+
+                if (newKeys.length == 1) {
+                    let text = this.stringTable[newKeys[0]]
+                    if (text.includes('Stash an')) return text
+
+                    return text.replace('Stash ',`Stash ${task['maxProgress']} `)
+                } else if (newKeys.length > 1) {
+                    let text = this.stringTable[newKeys[0]]
+                    if (text.includes('Stash an')) return text
+
+                    return text.replace('Stash ',`Stash ${task['maxProgress']} `)
+                }
+                return task['locationConditions']
+            }
+            return type
+        },
+        taskImage(task: any) {
+            const type = task['type']
+            if (type=='OwnNumOfItem') {
+                return this.rewardImageNamer(task['itemToOwn']).split('"').join('')
+            }
+            if (type=='VisitArea') {
+                return 'VisitArea'
+            }
+            if (type=='Kills') {
+                let killType = task['killConditions']['m_killTarget']
+
+                if (killType.includes('Creatures')) return 'KillCreature'
+                else return 'KillPlayer'
+            }
+            return type
         }
     }
 })
@@ -146,7 +258,6 @@ export default defineComponent({
     font-family: sans-serif;
     text-transform: initial;
     letter-spacing: .2rem;
-
 }
 
 .modal__header h2 span {
@@ -160,12 +271,6 @@ export default defineComponent({
 
     gap: 2rem;
 }
-
-.quest-parts section {
-    width: 100%;
-}
-
-
 
 @media screen and (max-width: 900px) {
     .quest-parts {
@@ -183,7 +288,7 @@ export default defineComponent({
     max-width: 100%;
     aspect-ratio: 1.6 / 1;
     height: 100%;
-    /* overflow: hidden; */
+    overflow: hidden;
 
     position: relative;
     
@@ -244,6 +349,7 @@ export default defineComponent({
 }
 
 .card__contents {
+    max-width: 100%;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -281,14 +387,15 @@ export default defineComponent({
 
 .card__desc {
     position: absolute;
-    width: 80%;
+    max-width: 100%;
     top: 1rem;
     left: var(--padding);
 }
 
 .card__desc-text {
+    max-width: 85%;
     opacity: .7;
-    overflow: hidden;
+    overflow:auto;
 
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -303,6 +410,7 @@ export default defineComponent({
 
 
 .card:hover .card__desc-text {
+    max-width: 85%;
     -webkit-line-clamp: 6;
     line-clamp: 6;
     height: 9em;
@@ -367,10 +475,57 @@ export default defineComponent({
     }
 }
 
+.card__tasks {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    transition: opacity var(--duration) var(--timing) var(--delay);
+}
+
+.card__tasks-container {
+    width: 100%;
+    padding-left: 5%;
+}
+.card:hover .card__tasks {
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: all;
+}
+
+.card__tasks header {
+    text-align: center;
+    width: 100%;
+}
+
+.card__tasks header h3 {
+    font-family: sans-serif;
+    text-transform: initial;
+    letter-spacing: .2rem;
+}
+
+.card__tasks header h3 span {
+    border-bottom: 2px solid var(--text-color-body-white);
+}
+
+.card__tasks-image {
+    display: inline-flex;
+    width: 32px;
+    float: left;
+}
 .card__rewards {
     position: absolute;
 
-    bottom: 15%;
+    bottom: var(--padding);
     opacity: 0;
     display: flex;
     flex-direction: row;
@@ -380,10 +535,14 @@ export default defineComponent({
     width: 110%;
 
     transition: opacity var(--duration) var(--timing) var(--delay);
+
+    pointer-events: none;
 }
 
 .card:hover .card__rewards {
     opacity: 1;
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: all;
 }
 
 .card__rewards-container {
@@ -399,17 +558,19 @@ export default defineComponent({
 .card__rewards-container:not(:last-child) {
     border-right: 1px solid rgba(255, 255, 255, 0.3);
 }
-.card__rewards-img {
+.card__rewards-image {
     display: inline-flex;
+    height: 32px;
     width: 32px;
     float: left;
 }
 .card__unlock {
+    display: none !important;
     position: absolute;
     width: 20%;
     aspect-ratio: 1 /1 ;
-    right:  calc(-.5 * var(--padding) );
-    bottom: calc(-.5 * var(--padding) );
+    right:  calc(.75 *var(--padding));
+    bottom: .5rem;
 
     outline: 5px solid red;
     padding: .4rem;
