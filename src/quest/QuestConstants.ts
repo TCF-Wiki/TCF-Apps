@@ -275,7 +275,6 @@ export const missions : missionList = {
         "Building a better Death Ray": [
             "Main-Osiris-CraftFuel-1",
             "Main-Osiris-CraftFuel-2",
-            "Main-Osiris-CraftFuel-3"
         ],
         "Satellite Master": [
             "Main-Osiris-UplinkHack-1",

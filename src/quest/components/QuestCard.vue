@@ -1,5 +1,5 @@
 <template>
-<section ref="card" class="card" @click="addShake(); isModalOpen = true">
+<section ref="card" class="card" @click="openModal()">
     <div class="card__image">
         <img class="card__image-img" :src="'quest-images/MI/' + name.replaceAll(' ','_') + '.png'" v-if="name">
     </div>
@@ -40,12 +40,22 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+/* @ts-ignore */
 import { onClickOutside } from '@vueuse/core';
 
 const isModalOpen = ref(false)
 const modal = ref(null)
 onClickOutside(modal, () => (isModalOpen.value = false))
     
+const openModal = () => {
+    isModalOpen.value = true
+
+    const body = document.body
+    
+    body.style.pointerEvents = 'none'
+
+    setTimeout( () => { body.style.pointerEvents = 'all'},600)
+}
 </script>
 
 
@@ -187,8 +197,6 @@ export default defineComponent({
     left: var(--padding);
 }
 
-
-
 .card__desc-text {
     overflow: hidden;
 
@@ -201,15 +209,12 @@ export default defineComponent({
 }
 
 
-.card:hover .card__desc_text {
-    -webkit-line-clamp: 3; 
-    line-clamp: 3; 
-}
 
 .card__footer {
     position: absolute;
     bottom: var(--padding);
     left: var(--padding);
+    opacity: .7;
 }
 .card__parts {
     position: absolute;
@@ -253,7 +258,7 @@ export default defineComponent({
 }
 
 .card__unlock-image {
-    width: 100%;
+    height: 100%;
     z-index: 1;
 }
 .osi {

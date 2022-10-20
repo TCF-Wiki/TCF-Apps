@@ -153,6 +153,7 @@
                         <QuestCard 
                             name="An Eye for Oil"
                             faction="ica"
+                            unlock="Oil Scanning Module"
                         />
                     </div>
                 </div>
@@ -204,7 +205,7 @@
                         <QuestCard 
                             name="Veltecite for the Masses"
                             faction="kor"
-                            unlock="Scanning Module Veltecite"
+                            unlock="Veltecite Scanning Module"
                         />
                     </div>
 
@@ -231,7 +232,7 @@
                         <QuestCard 
                             name="Titan Hunter"
                             faction="kor"
-                            unlock="Scanning Module Titan Ore"
+                            unlock="Titan Ore Scanning Module"
                         />
                     </div>
                 </div>
@@ -241,7 +242,7 @@
                         <QuestCard 
                             name="Focused on Crystals"
                             faction="kor"
-                            unlock="Scanning Module Focus Crystal"
+                            unlock="Focus Crystal Scanning Module"
                         />
                     </div>
 
@@ -294,6 +295,7 @@
                         <QuestCard 
                             name="Research Costs"
                             faction="kor"
+                            footer="Part 5 unlocks Tharis Island"
                         />
                     </div>
 
@@ -511,7 +513,7 @@
                         <QuestCard 
                             name="Combat Ready"
                             faction="osi"
-                            unlock="Combat_Stim"
+                            unlock="Combat Stim"
                         />
                     </div>
                 </div>
@@ -599,7 +601,7 @@ export default defineComponent({
 }
 
 .quest-line .quest-list:first-child {
-    margin-bottom: .5rem
+    margin-bottom: 2rem
 }
 .quest-line .quest-list:nth-child(2) {
     margin-top: .5rem
