@@ -4,7 +4,11 @@
         <img class="card__image-img" :src="'quest-images/MI/' + name.replaceAll(' ','_') + '.png'" v-if="name">
     </div>
     <div class="card__contents"> 
-        <header class="card__header" v-if="name"> <h3 class="card__header-text"> {{ name }} </h3></header>
+        <header class="card__header" v-if="name"> 
+            <h3 class="card__header-text"> 
+                {{ name }} 
+            </h3>
+        </header>
         <section class="card__desc" v-if="desc">
             <div class="card__desc-text"> 
                 {{ desc }}
@@ -112,7 +116,6 @@ export default defineComponent({
     isolation: isolate;
 
     border-radius: var(--border-radius);
-    transform: rotate(20px);
 
 
     background: black;
@@ -121,7 +124,12 @@ export default defineComponent({
 
     --padding: 4%;
     --border-radius: .5rem;
-    --duration: .5s;
+    --duration: .3s;
+    --timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --delay: .0s;
+
+    transition: all var(--duration) var(--timing) var(--delay);
+
 }
 
 .card__image {
@@ -134,7 +142,7 @@ export default defineComponent({
     opacity: .4;
     z-index: -2;
 
-    transition: all var(--duration);
+    transition: all var(--duration) var(--timing) var(--delay);
 
     transform: rotate(0);
 
@@ -147,7 +155,7 @@ export default defineComponent({
     height: 100%;
     overflow: hidden;
     background-size: cover;
-    transition: all var(--duration);
+    transition: all var(--duration) var(--timing) var(--delay);
 }
 
 .card:hover .card__image-img{
@@ -169,23 +177,26 @@ export default defineComponent({
 .card__header-text {
     font-family: sans-serif;
     text-transform: none;
-    transition: var(--duration) ease-in-out;
+    transition: all var(--duration) var(--timing) var(--delay);
+    font-size: 1.6rem;
 }
 
 .card:hover .card__header-text {
     letter-spacing: .005rem;
 }
+
 .card__header-text::before {
     content: '';
     width: 100%;
     height: 2%;
-    bottom: 0;
+    bottom: 10%;
     position: absolute;
-    background-color: rgba(255, 255, 255, .8);
+    background-color: rgba(255, 255, 255, 1);
+    opacity: .5;
 
-    transition: var(--duration) ease-in-out;
-
+    transition: width var(--duration) var(--timing) var(--delay);
 }
+
 .card:hover .card__header-text::before {
     width: 0px;
 }
@@ -200,7 +211,7 @@ export default defineComponent({
 .card__desc-text {
     overflow: hidden;
 
-    opacity: .7;
+    opacity: .9;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2; 
@@ -214,7 +225,7 @@ export default defineComponent({
     position: absolute;
     bottom: var(--padding);
     left: var(--padding);
-    opacity: .7;
+    opacity: .9;
 }
 .card__parts {
     position: absolute;
@@ -224,7 +235,7 @@ export default defineComponent({
 }
 
 .card:hover .card__parts {
-    animation: circle var(--duration) ease-in-out;
+    animation: circle var(--duration) var(--timing) var(--delay);
 }
 
 @keyframes circle {
@@ -233,11 +244,11 @@ export default defineComponent({
     }
 
     50% {
-        rotate: 180deg;
+        rotate: 0deg;
     }
 
     100% {
-        rotate: -360deg;
+        rotate: 0deg;
     }
 }
 .card__unlock {
@@ -262,15 +273,15 @@ export default defineComponent({
     z-index: 1;
 }
 .osi {
-    outline-color: #3fa321;
+    outline-color: #b5e51a;
 }
 
 .ica {
-    outline-color: #082cd1;
+    outline-color: #5ed1f4;
 }
 
 .kor {
-    outline-color: #d65c1f;
+    outline-color: #ff9600;
 }
 
 @keyframes rotate {
@@ -298,7 +309,7 @@ export default defineComponent({
 }
 
 .apply-rotate {
-    animation: rotate calc(var(--duration) * 1.5) ease-in-out both;
+    animation: rotate calc(var(--duration) * 1.5) var(--timing) var(--delay);
 }
 
 @media screen and (max-width: 900px) {

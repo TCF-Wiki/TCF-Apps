@@ -248,7 +248,7 @@ export const keyCardInfo: any = {
         videoid: 'W5tWRzaEesk',
     },
     Map02_KeyCard_01: {
-        name: 'Boss Office',
+        name: 'Boss\' Office',
         rarity: 'Epic',
         description: 'The unmistakable STARPORT logo leaps out from the card. The smaller Top Floor Admin whispers for your attention in pitiful subscript underneath. ',
         icon: "Boss' Office.png",

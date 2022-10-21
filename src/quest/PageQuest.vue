@@ -1,17 +1,23 @@
 <template>
     <div class="quest-line__container">
         <div class="quest-line__selector">
-            <div @click="currentSlide(1)" :class="{'active-slide': slideIndex === 1 }">
-                ICA
+            <div @click="currentSlide(1)" :class="{'active-slide': slideIndex === 1 }" class="quest-line__selector-tab">
+                <img src="/map-images/item-images/ica_Reputation.png" class="modal__header-image" alt="ICA Logo"> 
+                    <span> ICA </span>
+                <img src="/map-images/item-images/ica_Reputation.png" class="modal__header-image"> 
             </div>
 
-            <div @click="currentSlide(2)" :class="{'active-slide': slideIndex === 2 }"> 
-                Korolev
+            <div @click="currentSlide(2)" :class="{'active-slide': slideIndex === 2 }" class="quest-line__selector-tab">
+                <img src="/map-images/item-images/kor_Reputation.png" class="modal__header-image"> 
+                    <span> Korolev </span>
+                <img src="/map-images/item-images/kor_Reputation.png" class="modal__header-image"> 
             </div>
 
-            <div @click="currentSlide(3)" :class="{'active-slide': slideIndex === 3 }">
-                Osiris
-            </div> 
+            <div @click="currentSlide(3)" :class="{'active-slide': slideIndex === 3 }" class="quest-line__selector-tab">
+                <img src="/map-images/item-images/osi_Reputation.png" class="modal__header-image"> 
+                    <span> Osiris </span>
+                <img src="/map-images/item-images/osi_Reputation.png" class="modal__header-image"> 
+            </div>
         </div>
 
         <!-- ICA -->
@@ -765,13 +771,13 @@ export default defineComponent({
 
 @keyframes fade-in {
     from {
-        opacity: .4;
-        translate: 0 30rem
+        opacity: 0;
+        translate: 0 30%;
         
     } 
     to {
         opacity: 1;
-        translate: 0 0
+        translate: 0 0;
     }
 }
 
@@ -795,6 +801,7 @@ export default defineComponent({
     padding: .5rem;
 
     position: relative;
+
 }
 
 .quest-line__selector div:nth-child(2) {
@@ -803,6 +810,21 @@ export default defineComponent({
     border-bottom: none;
 }
 
+.quest-line__selector-tab {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+}
+
+.quest-line__selector-tab span {
+    text-align: center;
+}
+.quest-line__selector-tab img {
+    width: 2rem;
+}
 
 .quest-line__selector div:not(.active-slide)::before {
     content: '';

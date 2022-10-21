@@ -1,6 +1,19 @@
 <template>
 <div> 
-    <header class="modal__header"> <h2> <span> {{ name }} </span></h2></header>
+    <header class="modal__header"> 
+        <h2>  
+            <div> 
+                <img :src="'/map-images/item-images/'+ faction + '_Reputation.png'" class="modal__header-image"> 
+                {{ name }} 
+                <img :src="'/map-images/item-images/'+ faction + '_Reputation.png'" class="modal__header-image"> 
+            </div>
+        </h2>
+    </header>
+    <section class="modal__description"> 
+        <div class="modal__description-text">
+            {{ desc }}
+        </div>
+    </section>
     <section class="quest-parts"> 
         <section v-for="m, index in missions" class="card" :style="{'--index': missions.length-index}">
             <div class="card__image">
@@ -29,13 +42,15 @@
                         </div>
                     </div>
                 </section>
-                <div class="card__rewards">
+                <div class="card__rewards" :style="{'--length': orderedRewards(missionData[m]['rewards']).length}">
                     <div v-for="r in orderedRewards(missionData[m]['rewards'])" class="card__rewards-container"> 
-                            <img  
-                                :src="'/map-images/item-images/' + rewardImageNamer(r['item']) + '.png'" 
-                                class="card__rewards-image"
-                            >
-                            <div> {{ currencyDisplay(r) }}</div>
+                        <img  
+                            :src="'/map-images/item-images/' + rewardImageNamer(r['item']) + '.png'" 
+                            class="card__rewards-image"
+                        >
+                        <div> 
+                            {{ currencyDisplay(r) }}
+                        </div>
                     </div>
                 </div>
                 <div class="card__footer" role="footer">
@@ -62,7 +77,14 @@ import { missionData, stringTables, locationData } from '../data';
 import { missions } from '../QuestConstants';
 import { shieldData, backpackData, helmetData, itemData } from '../../forge/data'
 import { keyCardInfo } from '../../map/mapConstants'
+import { creatureNames } from '../QuestConstants';
+import { locationNameManager, killCreatureOrPlayer } from '../utils'
 
+for (let m in missionData) {
+    if (missionData[m]['rewards'].length > 4) {
+        console.log(m)
+    }
+}
 export default defineComponent({
     props: ['name', 'faction'],
     data() {
@@ -73,12 +95,15 @@ export default defineComponent({
             shieldData: shieldData,
             backpackData: backpackData,
             stringTable: stringTables['Objectives'],
-            locations: locationData 
+            locations: locationData,
+            desc: '' as string,
         }
     },
     mounted() {
-        setInterval(() => {resizeTo(screen.width, screen.height)}, 10)
-
+        const mission = missions[this.faction][this.name] 
+        if (mission) {
+            this.desc = this.missionData[mission[0]]['chainDescription']
+        }        
     },
     computed: {
     },
@@ -119,17 +144,18 @@ export default defineComponent({
             return newList
         },
         rewardImageNamer(reward: string) : string {
-            if (reward.includes('SoftCurrency')) reward = 'SoftCurrency'
+            if (reward.includes('SoftCurrency'))    reward = 'SoftCurrency'
             else if (reward.includes('Reputation')) reward =  `${this.faction}_Reputation`
-            else if (reward.includes('Shield_')) reward =  this.shieldData[reward]['ingamename']
-            else if (reward.includes('Helmet_'))reward = this.helmetData[reward]['ingamename']
-            else if (reward.includes('Bag_')) reward =  this.backpackData[reward]['ingamename']
+            else if (reward.includes('Shield_'))    reward =  this.shieldData[reward]['ingamename']
+            else if (reward.includes('Helmet_'))    reward = this.helmetData[reward]['ingamename']
+            else if (reward.includes('Bag_'))       reward =  this.backpackData[reward]['ingamename']
             else if (reward.includes('ShockGrenade_02')) reward =  'Frag Grenade'
-            else if (reward.includes('Scrip')) reward = reward
+            else if (reward.includes('Scrip'))      reward = reward
+            else if (reward.includes('HardDrive'))  reward = 'Data Drive Tier 1'
             else if (reward.includes('KeyCard')) {
-                if (reward.includes('Map01')) reward = 'Bright_Sands_Key_Card'
-                if (reward.includes('Map02')) reward = 'Crescent_Falls_Key_Card'
-                if (reward.includes('Map03')) reward = 'Tharis_Island_Key_Card'
+                if (reward.includes('Map01'))       reward = 'Bright_Sands_Key_Card'
+                if (reward.includes('Map02'))       reward = 'Crescent_Falls_Key_Card'
+                if (reward.includes('Map03'))       reward = 'Tharis_Island_Key_Card'
             } else {
                 if (itemData[reward]) {
                     reward = itemData[reward]['ingamename']
@@ -137,12 +163,15 @@ export default defineComponent({
             }
             for (let key in keyCardInfo) {
                 if (keyCardInfo[key]['name']==reward) {
-                    if (key.includes('Map01')) reward =  'Bright_Sands_Key_Card'
+                    if (key.includes('Map01')) reward = 'Bright_Sands_Key_Card'
                     if (key.includes('Map02')) reward = 'Crescent_Falls_Key_Card'
                     if (key.includes('Map03')) reward = 'Tharis_Island_Key_Card'
                 }
             }
-            return reward.split(' ').join('_')
+            if (reward.includes('Fusion Cartridge')) reward = 'Fusion_Cartridge_Batteries'
+            if (reward.includes('OrbitalCanonTarget')) reward = 'Orbital_Cannon_Beacon'
+            
+            return reward.split(' ').join('_').replace('#', '%23')
         },
         currencyDisplay(r: any) : string {
             if (r['item'] !=='SoftCurrency' || !r['item'].includes('Reputation')) {
@@ -154,57 +183,50 @@ export default defineComponent({
             const type = task['type']
 
             if (type=='OwnNumOfItem') {
-                if (itemData[task['itemToOwn']]) {
-                    return `${task['maxProgress']} ${itemData[task['itemToOwn']]['ingamename']}`
+                let item = task['itemToOwn']
+                if (itemData[item]) {
+                    return `${task['maxProgress']} ${itemData[item]['ingamename']}`
                 }
-                return `${task['maxProgress']} ${task['itemToOwn']}`
+
+                if (stringTables['Materials'][item]) item = stringTables['Materials'][item]['name']
+                item = item
+                    .replace('HardDrive_uncommon','Data Drive Tier 2')
+                    .replace('HardDrive_rare','Data Drive Tier 3')
+                    .replace('HardDrive_epic','Data Drive Tier 4')
+                    .replace('HardDrive_legendary','Data Drive Tier 5')
+                
+                item.replace('the Tharis Files','Gregor\'s Dossier')
+                return `${task['maxProgress']} ${item}`
             }
 
             if (type=='VisitArea') {
+                console.log(task['locationConditions'])
                 let keys = Object.keys(this.stringTable)
                 let newKeys : string[] = [];
                 newKeys = keys.filter(a => a.toLowerCase().includes(mission.toLowerCase()))
 
                 if (newKeys.length == 1) {
-                    let text =this.stringTable[newKeys[0]]
-                    if (text) return this.stringTable[newKeys[0]]
+                    if (this.stringTable[newKeys[0]] !=='') {
+                        let text =this.stringTable[newKeys[0]]
+                        text.replace('the Tharis Files','Gregor\'s Dossier')
+
+                        if (text) return this.stringTable[newKeys[0]]
+                    }
                 } else if (newKeys.length > 1) {
+                    if (this.stringTable[newKeys[index]] !=='') {
+
                     return this.stringTable[newKeys[index]]
+                        .replace('the Tharis Files','Gregor\'s Dossier')
+                    }
                 }
 
-                let text = task['locationConditions']
-                    .replace('Map',"MAP")
-                    .replace('StarportPad', 'StarportLandingPad')
-                    .replace('JungleFallenTree','FallenTree')
-                    .replace('JungleFavela','Favela')
-                    .replace('SkeletonObservation','SkeletonObservatory')
-                    .replace('AlienQuarry','CrystalCave')
-                    .replace('LetiumLocations','Letium Vent')
-                    .replace('PowerPlant','Powerplant')
-                    .replace('OsirisWildlife','Wildlife')
-
-                console.log(text, this.locations[text])
-                if (this.locations[text])  return 'Visit ' + this.locations[text]['name']
-                return text
-               
+                let location = '';
+                if (task['locationConditions']) location = locationNameManager(task['locationConditions'])
+                return 'Visit ' + location
             }
 
             if (type=='Kills') {
-                let killType = task['killConditions']['m_killTarget']
-
-                if (killType.includes('Creatures')) {
-                    const creature : string = task['killConditions']['m_specificAIEnemyTypeToKill'] 
-                    if (creature.includes('::None')) {
-                        let returnInfo = 'Kill ' + task['maxProgress'] + ' Creatures' 
-                        returnInfo += task['killConditions']['m_onlyDuringStorm'] ? ' during storm' : ''
-                        return returnInfo
-                    } else {
-
-                    }
-                    
-                    
-                }
-                else return 'Kill ' + task['maxProgress'] + ' Players' 
+                return killCreatureOrPlayer(task)
             }
             if (type=='DeadDrop') {
                 let keys = Object.keys(this.stringTable)
@@ -215,16 +237,21 @@ export default defineComponent({
                 if (newKeys.length == 1) {
                     let text = this.stringTable[newKeys[0]]
                     if (text.includes('Stash an')) return text
-
                     return text.replace('Stash ',`Stash ${task['maxProgress']} `)
                 } else if (newKeys.length > 1) {
                     let text = this.stringTable[newKeys[0]]
                     if (text.includes('Stash an')) return text
+                    
+                    // Stringtable is incomplete T_T
+                    if (mission == 'Main-ICA-OilPump-1') text += ' at Nutrion Office'
 
-                    return text.replace('Stash ',`Stash ${task['maxProgress']} `)
+                    return text
+                        .replace('Stash ',`Stash ${task['maxProgress']} `)
+                        .replace('the Tharis Files','Gregor\'s Dossier')
                 }
                 return task['locationConditions']
             }
+
             return type
         },
         taskImage(task: any) {
@@ -232,15 +259,18 @@ export default defineComponent({
             if (type=='OwnNumOfItem') {
                 return this.rewardImageNamer(task['itemToOwn']).split('"').join('')
             }
+
             if (type=='VisitArea') {
                 return 'VisitArea'
             }
+
             if (type=='Kills') {
                 let killType = task['killConditions']['m_killTarget']
 
                 if (killType.includes('Creatures')) return 'KillCreature'
                 else return 'KillPlayer'
             }
+
             return type
         }
     }
@@ -249,10 +279,6 @@ export default defineComponent({
 
 <style scoped>
 
-.modal__header {
-    text-align: center;
-    margin-bottom: 1rem;
-}
 
 .modal__header h2 {
     font-family: sans-serif;
@@ -260,8 +286,23 @@ export default defineComponent({
     letter-spacing: .2rem;
 }
 
-.modal__header h2 span {
-    border-bottom: 2px solid var(--text-color-body-white);
+.modal__header h2 div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.modal__header-image {
+    margin: 0;
+    scale: 0.7;
+    translate: 0 -.5rem;
+}
+
+
+.modal__description {
+    max-width: 75%;
+    margin: 1.5rem auto;
+    border-bottom: 0px solid var(--text-color-body-white);
 }
 .quest-parts {
     display: grid;
@@ -269,7 +310,8 @@ export default defineComponent({
     width: 100%;
     max-width: 100%;
 
-    gap: 2rem;
+    gap: 3rem;
+    margin-bottom: 20rem;
 }
 
 @media screen and (max-width: 900px) {
@@ -295,7 +337,7 @@ export default defineComponent({
     isolation: isolate;
 
     border-radius: var(--border-radius);
-    transform: rotate(20px);
+    transform: rotate(0px);
 
 
     background: black;
@@ -304,7 +346,7 @@ export default defineComponent({
 
     --padding: 4%;
     --border-radius: .5rem;
-    --duration: .5s;
+    --duration: .25s;
     --timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --delay: .1s;
 
@@ -314,14 +356,12 @@ export default defineComponent({
 }
 
 .card:hover {
-    height: calc(200% + 2rem + 3px);
+    height: calc(200% + 3rem + 3px);
     -padding: 3%;
     border: none;
 }
 
 
-
-.card
 .card__image {
     position: absolute;
     width: 100%;
@@ -422,7 +462,7 @@ export default defineComponent({
 }
 
 .card__desc-text::-webkit-scrollbar {
-    width: 2px;
+    width: 5px;
     border-top: none;
     border-bottom: none;
     cursor: pointer;
@@ -454,7 +494,8 @@ export default defineComponent({
     position: absolute;
     top: .4rem;
     right: var(--padding);
-    font-size: 1.5rem;
+    font-size: 1.7rem;
+    
 }
 
 .card:hover .card__parts {
@@ -467,19 +508,19 @@ export default defineComponent({
     }
 
     50% {
-        rotate: 180deg;
+        rotate: 0deg;
     }
 
     100% {
-        rotate: -360deg;
+        rotate: 0deg;
     }
 }
 
 .card__tasks {
     position: absolute;
-    top: 40%;
-    left: 0;
-    width: 100%;
+    top: 50%;
+    left: 5%;
+    width: 90%;
     opacity: 0;
 
     display: flex;
@@ -489,22 +530,33 @@ export default defineComponent({
     flex-wrap: wrap;
     gap: .5rem;
 
+    /* border-top: 1px dashed var(--text-color-body-white);
+    padding-top: 5%; */
     transition: opacity var(--duration) var(--timing) var(--delay);
 }
 
 .card__tasks-container {
     width: 100%;
-    padding-left: 5%;
+    text-align: center;
+
+    display: grid;
+    grid-template-columns: 10% 90%;
+}
+
+.card__tasks-container div {
+    text-align: left;
 }
 .card:hover .card__tasks {
-    opacity: 1;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 1);
+    opacity: .7;
     pointer-events: all;
 }
 
 .card__tasks header {
-    text-align: center;
+    display: none;
+    text-align: left;
     width: 100%;
+    opacity: .8;
 }
 
 .card__tasks header h3 {
@@ -518,52 +570,72 @@ export default defineComponent({
 }
 
 .card__tasks-image {
-    display: inline-flex;
-    width: 32px;
-    float: left;
+    display: inline-block;
+    width: 24px;
+    opacity: .8;
 }
 .card__rewards {
     position: absolute;
 
-    bottom: var(--padding);
+    bottom: 3%;
+    left: 5%;
     opacity: 0;
+
+    /* display: grid;
+    grid-template-columns: repeat(var(--length), 1fr); */
+
     display: flex;
     flex-direction: row;
-    justify-content: center;
     flex-wrap: wrap;
-    gap: .5rem;
-    width: 110%;
 
+    width: 90%;
+    gap: .5rem;
+    justify-content: center;
     transition: opacity var(--duration) var(--timing) var(--delay);
 
     pointer-events: none;
 }
 
 .card:hover .card__rewards {
-    opacity: 1;
-    color: rgba(255, 255, 255, 0.7);
+    opacity: .7;
+    color: rgba(255, 255, 255, 1);
     pointer-events: all;
 }
 
 .card__rewards-container {
+    width: calc(90% / 4);
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
-.card__rewards-container div {
-    translate: 0 2.5px;
-    padding: 0 .1rem;
+.card__rewards-container img {
+    height: 100%;
 }
 
-.card__rewards-container:not(:last-child) {
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
+.card__rewards-container div {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
-.card__rewards-image {
-    display: inline-flex;
-    height: 32px;
-    width: 32px;
-    float: left;
+
+.card__rewards-container:not(:last-child) div::before {
+    content: '';
+
+    position: absolute;
+    width: 2px;
+    height: 80%;
+    background-color: var(--text-color-body-white);
+    opacity: .5;
+    right: -12%;
+
+    border-radius: 100px;
+    background: rgb(224,219,219);
+    background: linear-gradient(180deg, rgba(224,219,219,1) 0%, rgba(196,196,196,1) 38%, rgba(136,130,130,1) 100%);
+
 }
+
 .card__unlock {
     display: none !important;
     position: absolute;
