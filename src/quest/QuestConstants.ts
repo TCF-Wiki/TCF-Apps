@@ -117,6 +117,12 @@ export const missions : missionList = {
             "Main-KOR-GruntWork-7",
             "Main-KOR-GruntWork-8"
         ],
+        "Uncharted Territory": [
+            "Main-KOR-EarlyMap2-1",
+            "Main-KOR-EarlyMap2-2",
+            "Main-KOR-EarlyMap2-3",
+            "Main-KOR-EarlyMap2-4"
+        ],
         "Veltecite for the Masses": [
             "Main-KOR-Veltecite-1"
         ],

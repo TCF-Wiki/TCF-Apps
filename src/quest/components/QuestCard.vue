@@ -3,6 +3,14 @@
     <div class="card__image">
         <img class="card__image-img" :src="'quest-images/MI/' + name.replaceAll(' ','_') + '.png'" v-if="name">
     </div>
+    <div class="card__button" role="button" @click.stop.prevent="progressInfo.toggle(faction, name)">
+            <div class="card__button-text" :class="faction" >
+                <svg v-if="progressInfo.get()[faction][name] >= missions[faction][name].length"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                <svg v-else class="xmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/></svg>
+            </div>
+    </div>
     <div class="card__contents"> 
         <header class="card__header" v-if="name"> 
             <h3 class="card__header-text"> 
@@ -22,7 +30,7 @@
         <div class="card__unlock" v-if="unlock" :class="faction">
             <img class="card__unlock-image" :src="'/map-images/item-images/' + unlock.replaceAll(' ','_') + '.png'">
         </div>
-        <div class="card__parts" v-if="parts"> {{parts}} </div>
+        <div class="card__parts" v-if="parts"> {{progressInfo.get()[faction][name]}} / {{ missions[faction][name].length }}</div>
     </div>
 </section>
 
@@ -68,7 +76,7 @@ import  { defineComponent } from 'vue';
 import { missionData } from '../data'
 import { missions } from '../QuestConstants'
 import QuestParts from './QuestParts.vue'
-
+import { progress } from '../trackProgress'
 export default defineComponent({
     props: [
         "name",
@@ -82,13 +90,14 @@ export default defineComponent({
             missionData: missionData,
             desc: '' as string,
             parts: '' as string,
+            progressInfo: progress
         }
     },
     mounted() {
         const mission = missions[this.faction][this.name] 
         if (mission) {
             this.desc = this.missionData[mission[0]]['chainDescription']
-            this.parts = `${mission.length} / ${mission.length}`
+            this.parts = `${this.progressInfo.get()[this.faction][this.name]} / ${mission.length}`
         }
     },
     methods: {
@@ -178,7 +187,8 @@ export default defineComponent({
     font-family: sans-serif;
     text-transform: none;
     transition: all var(--duration) var(--timing) var(--delay);
-    font-size: 1.6rem;
+    font-size: 100%;
+    text-overflow: ellipsis;
 }
 
 .card:hover .card__header-text {
@@ -201,6 +211,46 @@ export default defineComponent({
     width: 0px;
 }
 
+.card__button {
+    position: absolute;
+    bottom: var(--padding);
+    right: calc(var(--padding) / 1.6);
+    opacity: 1;
+
+    width: 10%;
+    text-align: center;
+    /* transition: all var(--duration) var(--timing) var(--delay); */
+
+    display: flex;
+    justify-content: end;
+
+    z-index: 4;
+
+    transition: scale var(--duration) var(--timing) var(--delay);
+}
+
+.card__button:hover {
+    scale: 1.2
+}
+
+.card__button-text {
+    width: 75%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: red;
+    z-index: 4;
+}
+
+.card__button:has(.xmark) {
+    right: calc(var(--padding) / 10)
+}
 .card__desc {
     position: absolute;
     width: 80%;
@@ -253,36 +303,43 @@ export default defineComponent({
 }
 .card__unlock {
     position: absolute;
-    width: 20%;
-    height: 31%;
-    right:  -3%;
-    bottom: -3%;
-
-    outline: 5px solid red;
-    padding: .4rem;
-
-    backdrop-filter: blur(1px);
-    border-radius: 50%;
+    bottom: var(--padding);
+    right: calc(3.5 *var(--padding));
+    opacity: 1;
+    pointer-events: none;
+    width: 10%;
+    text-align: center;
+    transition: all var(--duration) var(--timing) var(--delay);
 
     display: flex;
-    justify-content: flex;
+    justify-content: end;
+
+    transition: all var(--duration) var(--timing) var(--delay);
+    z-index: 0;
 }
 
 .card__unlock-image {
     height: 100%;
-    z-index: 1;
+    width: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
+
 .osi {
-    outline-color: #b5e51a;
+    outline-color: #3fa321;
+    fill: #3fa321;
 }
 
 .ica {
     outline-color: #5ed1f4;
+    fill: #5ed1f4;
 }
 
 .kor {
-    outline-color: #ff9600;
+    outline-color: #d65c1f;
+    fill: #d65c1f;
 }
+
 
 @keyframes rotate {
     10%,
@@ -314,7 +371,7 @@ export default defineComponent({
 
 @media screen and (max-width: 900px) {
     .card__header-text {
-        font-size: 1rem;
+        font-size: .8rem;
     }
     .card__desc {
         display: none;
@@ -322,6 +379,10 @@ export default defineComponent({
 
     .card__parts {
         font-size: .8rem;
+    }
+
+    .card__footer {
+        display: none;
     }
 }
 

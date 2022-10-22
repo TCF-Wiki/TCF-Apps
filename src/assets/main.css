@@ -431,6 +431,22 @@ input[type='range']:hover::-webkit-slider-thumb {
     cursor: pointer;
 }
 
+@media screen and (max-width: 900px) {
+    .modal__bg {
+        top: 6%;
+        z-index: 100;
+    }
+    .modal__content {
+        width: 100%;
+    }
+
+    .modal__close-button {
+        font-size: 3rem;
+        top: 1.6%;
+        right: 5%;
+        color: red;
+    }
+}
 .modal-enter-active,
 .modal-leave-active {
     transition:  all .5s ease;

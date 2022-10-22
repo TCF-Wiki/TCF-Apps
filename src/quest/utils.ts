@@ -1,3 +1,4 @@
+import { weaponData } from "@/calc/data"
 import { locationData } from "./data"
 import { creatureNames } from "./QuestConstants"
 
@@ -41,7 +42,9 @@ export function mapNameManager(name: string) : string {
     return name
 }
 
-export function killCreatureOrPlayer(task: any) : string {
+export function killCreatureOrPlayer(task: any, faction: string) : string {
+    // utility function to get a string describing a type=kills task.
+
     // type of kill
     let killType = task['killConditions']['m_killTarget']
     let creature : string = task['killConditions']['m_specificAIEnemyTypeToKill'].replace('EYEnemyType::','') 
@@ -55,6 +58,7 @@ export function killCreatureOrPlayer(task: any) : string {
         creature = creatureNames[creature]
     }
 
+    // Plural.
     if (task['maxProgress'] > 1) creature += 's'
 
     // set up our conditional locations
@@ -67,10 +71,37 @@ export function killCreatureOrPlayer(task: any) : string {
     } 
 
 
+    // set up our weapons you can kill with 
+    let weapon = ''
+    const category = task['killConditions']['m_allowedWeaponCategories']
+    const weapons = task['killConditions']['m_allowedSpecificWeapons']
+    if (category.length == 1) {
+       // Never longer then 1 entry, so just
+
+       const weaponString = category[0]
+            .replace('EYDeviceCategory::','')
+            .replace('SniperRifle','Sniper')
+            .replace('AssaultRifle', 'AR')
+        weapon += `with a ${weaponString}`
+    } else if (weapons.length > 0) {
+        if (weapons.length > 1 ) {
+            let factionString = faction
+                .replace('kor', 'Korolev Weapon')
+                .replace('osi', 'Osiris Weapon')
+                .replace('ica', 'ICA Weapon')
+
+            weapon += ` with a ${factionString}`
+        } else {
+            weapon += ` with the  ${weaponData[weapons[0]['RowName']]['inGameName']}`
+        }
+    }
+
+    // build our final string
     let returnInfo = 'Kill ' + task['maxProgress'] + ' ' + creature
     if (task['killConditions']['m_onlyDuringStorm']) returnInfo += ' during storm'
     if (location) returnInfo += ` at ${location}`
     if (map) returnInfo += ` on ${map}`
-
+    if (weapon) returnInfo += weapon
+    
     return returnInfo
 }
