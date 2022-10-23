@@ -16,7 +16,7 @@ if (!localStorage.getItem('progress') || localStorage.getItem('progress') === '{
         console.log(f)
         progressList[f] = {}
         for (let m in missions[f]) {
-            console.log(m)
+
             progressList[f][m] = 0
         }
     }

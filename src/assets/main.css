@@ -438,6 +438,7 @@ input[type='range']:hover::-webkit-slider-thumb {
     }
     .modal__content {
         width: 100%;
+        padding-bottom: 100%;
     }
 
     .modal__close-button {
@@ -462,3 +463,13 @@ input[type='range']:hover::-webkit-slider-thumb {
 .no-pointer {
     pointer-events: none;
 }
+
+.Vue-Toastification__toast {
+    border-radius: 0 !important;
+}
+
+.Vue-Toastification__toast--info {
+    background-color: var(--rarity-color-rare) !important;
+    color: var(--primary);
+}
+

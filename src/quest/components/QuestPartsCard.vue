@@ -43,10 +43,9 @@
         </section>
         <div class="card__button" role="button" @click.stop.prevent="handleProgress()">
             <div class="card__button-text" :class="faction" >
-                <svg v-if="progressInfo.get()[faction][name] >= index+1"
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                <svg  v-if="progressInfo.get()[faction][name] >= index+1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M211.8 339.8C200.9 350.7 183.1 350.7 172.2 339.8L108.2 275.8C97.27 264.9 97.27 247.1 108.2 236.2C119.1 225.3 136.9 225.3 147.8 236.2L192 280.4L300.2 172.2C311.1 161.3 328.9 161.3 339.8 172.2C350.7 183.1 350.7 200.9 339.8 211.8L211.8 339.8zM0 96C0 60.65 28.65 32 64 32H384C419.3 32 448 60.65 448 96V416C448 451.3 419.3 480 384 480H64C28.65 480 0 451.3 0 416V96zM48 96V416C48 424.8 55.16 432 64 432H384C392.8 432 400 424.8 400 416V96C400 87.16 392.8 80 384 80H64C55.16 80 48 87.16 48 96z"/></svg>          
 
-                <svg v-else class="xmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/></svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M384 32C419.3 32 448 60.65 448 96V416C448 451.3 419.3 480 384 480H64C28.65 480 0 451.3 0 416V96C0 60.65 28.65 32 64 32H384zM384 80H64C55.16 80 48 87.16 48 96V416C48 424.8 55.16 432 64 432H384C392.8 432 400 424.8 400 416V96C400 87.16 392.8 80 384 80z"/></svg>
             </div>
     </div>
         <!-- <div class="card__unlock"  :class="faction" v-if="missionData[m]['rewards'].length > 3">
@@ -90,19 +89,23 @@ export default defineComponent({
         }
     },
     methods: {
-        handleProgress() {
+        handleProgress() : void {
+            // This function handles the progress upon click of the part toggler.
             const currentProgress = this.progressInfo.get()[this.faction][this.name]
 
+            // if the current progress is equal to the current part
+            // progress starts at one, index at 0
             if (currentProgress == this.index + 1) {
+                // then that means we click it and want to undo it, setting the current
+                // progress to the card before it
                 this.progressInfo.setPart(this.faction, this.name, this.index)
             } else {
+                // otherwise, set it to the card we click
                 this.progressInfo.setPart(this.faction, this.name, this.index+1)
             }
-
-            console.log(this.progressInfo.get()[this.faction][this.name])
-
         },
         rewardImageNamer(reward: string) : string {
+            // This function gets the name of the image when given an item name. Handles edge cases.
             if (reward.includes('SoftCurrency'))    reward = 'SoftCurrency'
             else if (reward.includes('Reputation')) reward =  `${this.faction}_Reputation`
             else if (reward.includes('Shield_'))    reward =  this.shieldData[reward]['ingamename']
@@ -133,12 +136,15 @@ export default defineComponent({
             return reward.split(' ').join('_').replace('#', '%23')
         },
         currencyDisplay(r: any) : string {
+            // Gets a string representing the reward amount for a mission
             if (r['item'] !=='SoftCurrency' || !r['item'].includes('Reputation')) {
+                // save some space by shortening the text
                 if (r['amount'] > 999) return (r['amount'] / 1000) + 'k'
             }
             return r['amount']
         },
-        taskText(task : any, mission: string, index: number) {
+        taskText(task : any, mission: string, index: number) : string {
+            // This function returns the text for a task. Handles edge cases.
             const type = task['type']
 
             if (type=='OwnNumOfItem') {
@@ -240,6 +246,7 @@ export default defineComponent({
             return type
         },
         orderedRewards(rewardList: any) : any {
+            // this function orders the rewards for this card as they are in game.
             let newList : any = []
 
             for (let r in rewardList) {
@@ -433,7 +440,6 @@ export default defineComponent({
     position: absolute;
     bottom: calc(var(--padding) * 0.5);
     right: calc(var(--padding) / 1.6);
-    opacity: 0;
 
     width: 10%;
     text-align: center;

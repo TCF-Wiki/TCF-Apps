@@ -506,14 +506,26 @@
                         />
                     </div>
 
-                </div>
+                    <div class="quest-list__right-line" :class="lineColor('osi','Field Research', 2)">
+                            <div class="quest-list__right-line-content">
+                                Part 2
+                            </div>
+                    </div>
 
-                <div class="quest-list">
-                    <div class="quest-list__center" :class="lineColor('osi','Path to Strong Medkits')"> 
+                    <div class="quest-list__right" :class="lineColor('osi','Path to Strong Medkits')"> 
                         <QuestCard 
                             name="Path to Strong Medkits"
                             faction="osi"
                             unlock="Strong Medkit"
+                        />
+                    </div>
+                </div>
+
+                <div class="quest-list">
+                    <div class="quest-list__center" :class="lineColor('osi','Laser Show')"> 
+                        <QuestCard 
+                            name="Everything is Crystals"
+                            faction="osi"
                         />
                     </div>
                 </div>
@@ -573,7 +585,13 @@
         </div>
 
         <div class="quest-line__container-inner fade">       
-            Test 
+            <div class="quest-line">
+                <div class="quest-list">
+                    <div class="quest-list__center wide"> 
+                        <ItemList />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -585,11 +603,12 @@
 import {defineComponent} from 'vue';
 import QuestCard from './components/QuestCard.vue';
 import QuestStart from './components/QuestStart.vue'
+import ItemList from './components/ItemList.vue'
 import { missions } from './QuestConstants';
 import { progress } from './trackProgress';
 
 export default defineComponent({ 
-    components: { QuestCard, QuestStart  },
+    components: { QuestCard, QuestStart, ItemList  },
     data() {
         return {
             slideIndex: 2,
@@ -817,6 +836,10 @@ export default defineComponent({
     position: relative;
 }
 
+.quest-list__center.wide {
+    grid-column: 1 / 6;
+}
+
 .quest-list__right {
     grid-column: 5 / 5;
 }
@@ -864,9 +887,9 @@ export default defineComponent({
 
     margin: 0 2rem 1rem;
 
-    border: 3px solid var(--background-button-color);
 
     cursor: pointer;
+    border-collapse: collapse;
 }
 
 .quest-line__selector div {
@@ -877,7 +900,7 @@ export default defineComponent({
 
     position: relative;
     border-collapse: collapse;
-
+    border: 3px solid var(--background-button-color);
 }
 
 @media screen and (max-width: 900px) {
@@ -885,13 +908,6 @@ export default defineComponent({
         grid-template-columns: 1fr 1fr;
     }
 }
-
-.quest-line__selector div:not(:last-child) {
-    border-right: 4px solid var(--background-button-color);
-    border-top: none;
-    border-bottom: none;
-}
-
 .quest-line__selector-tab {
     display: flex;
     flex-direction: row;
@@ -906,6 +922,12 @@ export default defineComponent({
 }
 .quest-line__selector-tab img {
     width: 2rem;
+}
+
+@media screen and (max-width: 900px) {
+    .quest-line__selector-tab img {
+        display: none;
+    }
 }
 
 .quest-line__selector div:not(.active-slide)::before {
@@ -973,6 +995,16 @@ a.back-to-top:hover  {
 
     .back-to-top {
         width: 200%;
+    }
+
+
+    .quest-list {
+        gap: 0.1rem;
+        margin: 0.2rem;
+    }
+
+    .quest-list * {
+        --border-width: 2px
     }
 
     .quest-list__left-line-content,
