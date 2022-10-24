@@ -159,7 +159,7 @@ export default defineComponent({
     background-image: url('/quest-images/Quarters/background.png');
     overflow: hidden;
 
-    opacity: .7;
+    opacity: .35;
 
     z-index: -2;
 
