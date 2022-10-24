@@ -403,6 +403,7 @@ input[type='range']:hover::-webkit-slider-thumb {
     justify-content: center;
     align-items: center;
 
+    z-index: 1;
 }
 
 .modal__content {
