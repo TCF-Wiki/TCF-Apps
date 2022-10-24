@@ -24,3 +24,21 @@ async function get_locations() {
 }
 
 export const locationData = await get_locations()
+
+async function get_tech_tree() {
+    const response = await fetch('https://raw.githubusercontent.com/TCF-Wiki/TCF-Information/main/personalQuarterTechTreeUpgrades.json')
+    const json = await response.json();
+
+    return json
+}
+
+export const techTreeData = await get_tech_tree()
+
+async function get_tech_levels() {
+    const response = await fetch('https://raw.githubusercontent.com/TCF-Wiki/TCF-Information/main/personalQuarterLevelUpgrades.json')
+    const json = await response.json();
+
+    return json
+}
+
+export const techLevelsData = await get_tech_levels()

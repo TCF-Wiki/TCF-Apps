@@ -105,3 +105,30 @@ export function killCreatureOrPlayer(task: any, faction: string) : string {
     
     return returnInfo
 }
+
+export function getItemsOfMission(data: any) : any {
+    let returnInfo : any = {}
+    for (let t in data) {
+        const pData = data[t]
+        const type = pData['type']
+
+        if (type == 'OwnNumOfItem') {
+            const item = pData['itemToOwn']
+            if (returnInfo[item]) {
+                returnInfo[item] = returnInfo[item] + pData['maxProgress']
+            } else {
+                returnInfo[item] = pData['maxProgress']
+            }
+        } 
+
+        if (type == 'DeadDrop') {
+            const item = pData['deadDropItem']
+            if (returnInfo[item]) {
+                returnInfo[item] = returnInfo[item] + pData['maxProgress']
+            } else {
+                returnInfo[item] = pData['maxProgress']
+            }
+        }
+    }            
+    return returnInfo
+}

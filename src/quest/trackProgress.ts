@@ -1,5 +1,6 @@
 import { missions } from './QuestConstants'
 import { reactive } from 'vue'
+import { techTreeData } from './data'
 type progressionList = {
     [key: string]: { 
         [key: string]: number
@@ -7,13 +8,31 @@ type progressionList = {
     }
 }
 
+type quarterList = {
+    [key: string]:  number
+            // which part the user is on
+    
+}
+
+
+// Handle if a new season has started.
+const date = new Date().valueOf() 
+const cuttoff_date = 0
+if (localStorage.getItem('date-created')) {
+    // @ts-ignore
+    if (localStorage.getItem('date-created') < cuttoff_date) {
+        localStorage.removeItem('progress')
+        localStorage.removeItem('quarters')
+        localStorage.removeItem('date-created')
+    }
+}
 
 let storage = {};
 if (!localStorage.getItem('progress') || localStorage.getItem('progress') === '{}') {
     let progressList : progressionList = {}
 
     for (let f in missions) { 
-        console.log(f)
+
         progressList[f] = {}
         for (let m in missions[f]) {
 
@@ -22,12 +41,29 @@ if (!localStorage.getItem('progress') || localStorage.getItem('progress') === '{
     }
 
     localStorage.setItem('progress', JSON.stringify(progressList))
+    localStorage.setItem('date-created', date.toString())
     storage = progressList
 } else {
     storage = JSON.parse(localStorage.getItem('progress') ?? '')
 }
 
-export const progress = reactive({
+let quarters = {}
+if (!localStorage.getItem('quarters') || localStorage.getItem('quarters') === '{}') {
+    let progressList : quarterList = {
+        "overall": 1
+    }
+
+    for (let u in techTreeData) {
+        progressList[u] = 0
+    }
+
+    localStorage.setItem('quarters',JSON.stringify(progressList))
+    quarters = progressList
+} else {
+    quarters = JSON.parse(localStorage.getItem('quarters') ?? '')
+}
+
+export const factionProgress = reactive({
     list: storage as progressionList,
     get() : progressionList {
         return this.list
@@ -72,3 +108,22 @@ export const progress = reactive({
 
 
 })
+
+
+export const quarterProgress = reactive({
+    list: quarters as quarterList,
+    get() {
+        return this.list
+    },
+    setPart(upgrade : string, part : number, type : 'level' | 'upgrade' ) : void {
+        if (type=='level') {
+            this.list['overall'] = part
+        } else {
+            this.list[upgrade] = part
+        }
+
+        localStorage.setItem('quarters', JSON.stringify(this.list))
+    }
+})
+
+

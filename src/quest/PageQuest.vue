@@ -1,9 +1,8 @@
 <template>
-    <!-- {{ list.get() }} -->
     <div class="quest-line__container">
         <div class="quest-line__selector">
             <div @click="currentSlide(1)" :class="{'active-slide': slideIndex === 1 }" class="quest-line__selector-tab">
-                <img src="/map-images/item-images/ica_Reputation.png" class="modal__header-image" alt="ICA Logo"> 
+                <img src="/map-images/item-images/ica_Reputation.png" class="modal__header-image"> 
                     <span> ICA </span>
                 <img src="/map-images/item-images/ica_Reputation.png" class="modal__header-image"> 
             </div>
@@ -21,7 +20,15 @@
             </div>
 
             <div @click="currentSlide(4)" :class="{'active-slide': slideIndex === 4 }" class="quest-line__selector-tab">
+                <img src="/quest-images/Quarters/QuarterLevel.png" class="modal__header-image"> 
+                <span> Quarters </span>
+                <img src="/quest-images/Quarters/QuarterLevel.png" class="modal__header-image"> 
+            </div>
+
+            <div @click="currentSlide(5)" :class="{'active-slide': slideIndex === 5 }" class="quest-line__selector-tab">
+                <img src="/quest-images/Quarters/ItemList.png" class="modal__header-image"> 
                 <span> Items </span>
+                <img src="/quest-images/Quarters/ItemList.png" class="modal__header-image"> 
             </div>
         </div>
 
@@ -506,7 +513,7 @@
                         />
                     </div>
 
-                    <div class="quest-list__right-line" :class="lineColor('osi','Field Research', 2)">
+                    <div class="quest-list__right-line" :class="lineColor('osi','Laser Show', 2)">
                             <div class="quest-list__right-line-content">
                                 Part 2
                             </div>
@@ -584,6 +591,18 @@
 
         </div>
 
+        <!-- QUARTERS -->
+        <div class="quest-line__container-inner fade">       
+            <div class="quest-line">
+                <div class="quest-list">
+                    <div class="quest-list__center wide"> 
+                        <QuarterList />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ITEMS -->
         <div class="quest-line__container-inner fade">       
             <div class="quest-line">
                 <div class="quest-list">
@@ -604,15 +623,16 @@ import {defineComponent} from 'vue';
 import QuestCard from './components/QuestCard.vue';
 import QuestStart from './components/QuestStart.vue'
 import ItemList from './components/ItemList.vue'
+import QuarterList from './components/QuarterList.vue'
 import { missions } from './QuestConstants';
-import { progress } from './trackProgress';
+import { factionProgress } from './trackProgress';
 
 export default defineComponent({ 
-    components: { QuestCard, QuestStart, ItemList  },
+    components: { QuestCard, QuestStart, ItemList, QuarterList  },
     data() {
         return {
             slideIndex: 2,
-            list: progress
+            list: factionProgress
         }
     },
     methods: {
@@ -881,7 +901,7 @@ export default defineComponent({
 
 .quest-line__selector {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
     text-align: center;
 

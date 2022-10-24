@@ -9,7 +9,7 @@
                 <a href="https://thecyclefrontier.wiki/wiki/Main_Page" target="_blank"> Official Wiki </a>
                 <a href="/map"> Interactive Map </a>
                 <a href="/calc"> Weapon Calculator </a>
-                <a href="/quest"> Quest Tracker </a>
+                <a href="/progress"> Quest Tracker </a>
                 <a href="https://tracker.thecyclefrontier.wiki"> Item Tracker </a>
                 <a href="/forge"> Forge Simulator </a>
                 <a href="/loadout"> Loadout Generator </a>

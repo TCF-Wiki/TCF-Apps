@@ -72,7 +72,7 @@ import { shieldData, backpackData, helmetData, itemData } from '../../forge/data
 import { stringTables, missionData } from '../data'
 import { keyCardInfo } from '../../map/mapConstants'
 import { locationNameManager, killCreatureOrPlayer } from '../utils'
-import { progress } from '../trackProgress';
+import { factionProgress } from '../trackProgress';
 import { missions } from '../QuestConstants';
 
 export default defineComponent({
@@ -85,7 +85,7 @@ export default defineComponent({
             helmetData: helmetData,
             shieldData: shieldData,
             backpackData: backpackData,
-            progressInfo: progress
+            progressInfo: factionProgress
         }
     },
     methods: {
@@ -112,7 +112,9 @@ export default defineComponent({
             else if (reward.includes('Helmet_'))    reward = this.helmetData[reward]['ingamename']
             else if (reward.includes('Bag_'))       reward =  this.backpackData[reward]['ingamename']
             else if (reward.includes('ShockGrenade_02')) reward =  'Frag Grenade'
-            else if (reward.includes('Scrip'))      reward = reward
+            else if (reward.includes('ICAScrip')) reward = "ICA Scrip"
+            else if (reward.includes('OsirisScrip')) reward = "Osiris Scrip"
+            else if (reward.includes('KorolevScrip')) reward = "Korolev Scrip"
             else if (reward.includes('HardDrive'))  reward = 'Data Drive Tier 1'
             else if (reward.includes('KeyCard')) {
                 if (reward.includes('Map01'))       reward = 'Bright_Sands_Key_Card'
@@ -132,7 +134,7 @@ export default defineComponent({
             }
             if (reward.includes('Fusion Cartridge')) reward = 'Fusion_Cartridge_Batteries'
             if (reward.includes('OrbitalCanonTarget')) reward = 'Orbital_Cannon_Beacon'
-            
+            if (stringTables['Materials'][reward]) reward = stringTables['Materials'][reward]['name']
             return reward.split(' ').join('_').replace('#', '%23')
         },
         currencyDisplay(r: any) : string {
@@ -160,7 +162,7 @@ export default defineComponent({
                     .replace('HardDrive_epic','Data Drive Tier 4')
                     .replace('HardDrive_legendary','Data Drive Tier 5')
                     .replace('the Tharis Files','Gregor\'s Dossier')
-
+                    .replace('Bag_Altered_01','Huge Forge Backpack')
                     return `Deliver ${task['maxProgress']} ${item}`
             }
 

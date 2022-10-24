@@ -75,7 +75,7 @@ import  { defineComponent } from 'vue';
 import { missionData } from '../data'
 import { missions } from '../QuestConstants'
 import QuestParts from './QuestParts.vue'
-import { progress } from '../trackProgress'
+import { factionProgress } from '../trackProgress'
 export default defineComponent({
     props: [
         "name",
@@ -89,7 +89,7 @@ export default defineComponent({
             missionData: missionData,
             desc: '' as string,
             parts: '' as string,
-            progressInfo: progress
+            progressInfo: factionProgress
         }
     },
     mounted() {

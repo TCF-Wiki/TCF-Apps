@@ -19,7 +19,7 @@ const routes = {
     '/loadout': Loadout,
     '/map': Map,
     '/forge': Forge,
-    '/quest': Quest
+    '/progress': Quest
 };
 const names = {
     '/': 'Apps',
@@ -28,7 +28,7 @@ const names = {
     '/loadout': 'Loadout Generator',
     '/map': 'Interactive Map',
     '/forge': 'Forge Simulator',
-    '/quest': 'Quest Tracker'
+    '/progress': 'Quest Tracker'
 };
 
 export default defineComponent({
