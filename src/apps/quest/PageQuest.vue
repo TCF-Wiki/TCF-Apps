@@ -928,6 +928,12 @@ export default defineComponent({
         grid-template-columns: 1fr 1fr;
     }
 }
+
+@media screen and (max-width: 1500px) {
+    .quest-line__selector {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
 .quest-line__selector-tab {
     display: flex;
     flex-direction: row;
