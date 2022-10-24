@@ -631,7 +631,7 @@ export default defineComponent({
     components: { QuestCard, QuestStart, ItemList, QuarterList  },
     data() {
         return {
-            slideIndex: 2,
+            slideIndex: 3,
             list: factionProgress
         }
     },
