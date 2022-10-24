@@ -73,7 +73,7 @@
 import { backpackData, helmetData, itemData, shieldData } from "../../forge/data";
 import { keyCardInfo } from "../../map/mapConstants";
 import { defineComponent } from "vue";
-import { useToast } from "vue-toastification";
+import { POSITION, useToast } from "vue-toastification";
 import { missionData, stringTables, techLevelsData, techTreeData } from "../data";
 import { missions } from "../QuestConstants";
 import { factionProgress, quarterProgress } from "../trackProgress";
@@ -251,7 +251,7 @@ export default defineComponent({
             const after = JSON.stringify(this.currentItems)
 
             if (before === after) return;
-            this.toast.info('Item list updated', {timeout: 2000})
+            this.toast.info('Item list updated', {timeout: 2000, position: POSITION.BOTTOM_RIGHT })
         },
 
         itemName(item: string, urlFormat?: boolean) : string {
