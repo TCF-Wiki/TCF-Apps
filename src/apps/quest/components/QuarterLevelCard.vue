@@ -48,7 +48,11 @@ export default defineComponent({
             if (item.includes('SoftCurrency'))    item = 'K-Marks'
             else if (item.includes('ShockGrenade_02')) item =  'Frag Grenade'
             else if (item.includes('Scrip'))      item = item
-            else if (item.includes('HardDrive'))  item = 'Data Drive Tier 1'
+            else if (item.includes('HardDrive_common'))  item = 'Data Drive Tier 1'
+            else if (item.includes('HardDrive_uncommon'))  item = 'Data Drive Tier 2'
+            else if (item.includes('HardDrive_rare'))  item = 'Data Drive Tier 3'
+            else if (item.includes('HardDrive_epic'))  item = 'Data Drive Tier 4'
+            else if (item.includes('HardDrive_legendary'))  item = 'Data Drive Tier 5'
             else if (item.includes('ICAScrip')) item = "ICA Scrip"
             else if (item.includes('OsirisScrip')) item = "Osiris Scrip"
             else if (item.includes('KorolevScrip')) item = "Korolev Scrip"
@@ -225,6 +229,7 @@ export default defineComponent({
     left: var(--padding);
 }
 
+
 .item__row {
     display: grid;
     grid-template-columns: 1fr 5fr;
@@ -245,4 +250,18 @@ export default defineComponent({
     translate: 0 -5px
 
 }
+
+@media screen and (max-width: 900px) {
+    .card__costs {
+        display: none;
+    }
+
+    .card__level {
+        top: 30%;
+        left: 43%;
+        right: unset;
+        bottom: unset;
+    }
+}
+
 </style>
