@@ -131,6 +131,11 @@ export default {
         margin-left: auto;
         padding: 0 1rem 1rem 0;
         font-size: 2rem;
+        cursor: pointer;
+        transition: all ease-in-out .3s;
+    }
+    .nav-menu svg:hover {
+        font-size: 1.8rem;
     }
     .logo {
         width: 100%;
